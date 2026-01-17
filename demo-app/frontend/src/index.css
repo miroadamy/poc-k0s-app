@@ -1,0 +1,55 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background: #f6f8fb;
+  color: #0f172a;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px 40px;
+}
+
+header h1 {
+  margin-bottom: 4px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+pre {
+  background: #0b1020;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+button {
+  margin-top: 12px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+.error {
+  color: #b91c1c;
+  margin-bottom: 8px;
+}
+
+.hint {
+  margin-top: 16px;
+  color: #475569;
+}

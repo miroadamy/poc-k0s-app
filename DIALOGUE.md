@@ -274,3 +274,74 @@ kube-system   kube-proxy-zb72b                  1/1     Running   0          2m4
 kube-system   kube-router-76mdq                 1/1     Running   0          2m41s
 kube-system   metrics-server-67bc669cf4-d7w5g   1/1     Running   0          2m38s
 ```
+
+## Demo App Candidates
+
+Starting: *Research React+Java demo apps* (1/3)
+
+Using "Fetch Web Page"
+
+Fetched 3 resources
+
+Using "Fetch Web Page"
+
+Fetched 2 resources
+
+Using "Fetch Web Page"
+
+Fetched 2 resources
+
+Using "Fetch Web Page"
+
+Fetched 2 resources
+
+Using "Fetch Web Page"
+
+Fetched 2 resources
+
+Using "Fetch Web Page"
+
+Fetched 2 resources
+
+Completed: *Research React+Java demo apps* (1/3)
+
+Here are three good candidates (React frontend + Java backend, multi‑container). Choose one:
+
+1) **Spring Petclinic (REST + React)**  
+- Backend: https://github.com/spring-petclinic/spring-petclinic-rest  
+- Frontend: https://github.com/spring-petclinic/spring-petclinic-reactjs  
+- Well-known sample, stable, easy to demo. Two containers (frontend + backend), optional DB container.
+
+2) **Corona Tracker (Spring Boot + React + MongoDB)**  
+- Repo: https://github.com/amrityam/spring-boot-reactjs-kubernetes  
+- Explicit Docker + Kubernetes instructions; includes frontend, backend, and MongoDB (3 containers). Good k8s-ready demo.
+
+3) **Yugastore (React UI + Spring Boot microservices)**  
+- Repo: https://github.com/YugabyteDB-Samples/yugastore-k8s  
+- Realistic microservices app for Kubernetes with React UI and Spring Boot services. Heavier but impressive.
+
+---
+
+None of this is actually great because the first two are fairly old, the number three is unnecessarily complex. What I want to be able to do is to run two containers of a frontend and two of the backend in order to play with a load balancing inside this Kubernetes cluster. 
+
+---
+
+## Build on Mac
+
+# 1) Create and use a buildx builder (one-time)
+docker buildx create --name multiarch --use
+
+# 2) Build + push backend (Java 21) for amd64
+cd demo-app/backend
+docker buildx build --platform linux/amd64 \
+  -t miroadamy/demo-backend:java21 \
+  --push .
+
+# 3) Build + push frontend for amd64
+cd ../frontend
+docker buildx build --platform linux/amd64 \
+  -t miroadamy/demo-frontend:latest \
+  --push .
+
+```
+
