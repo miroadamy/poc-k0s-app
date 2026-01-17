@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: demo-frontend:local
+          image: miroadamy/demo-frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
