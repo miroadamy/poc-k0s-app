@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  demo-backend:
+    build:
+      context: ./backend
+    image: demo-backend:local
+    environment:
+      PORT: "8080"
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -qO- http://localhost:8080/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  demo-frontend:
+    build:
+      context: ./frontend
+    image: demo-frontend:local
+    depends_on:
+      demo-backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"

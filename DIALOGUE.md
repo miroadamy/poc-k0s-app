@@ -345,3 +345,6 @@ docker buildx build --platform linux/amd64 \
 
 ```
 
+```
+ssh -i ~/.ssh/id_rsa cloud_user@dfd1c4cd1f084bbda962d1936d0808871c.mylabserver.com
+```
