@@ -2,11 +2,24 @@
 
 A minimal two-tier demo to validate k0s load balancing.
 
-- **Frontend:** React app served by Nginx
-- **Backend:** Java 17 HTTP server (no framework, lightweight)
-- **Kubernetes:** 2 replicas for each tier
+- **Frontend:** React app served by Nginx with reverse proxy to backend
+- **Backend:** Java 21 HTTP server (no framework, lightweight)
+- **Kubernetes:** 2 replicas for each tier (4 pods total)
+- **Ingress:** Traefik with HTTP/HTTPS support on standard ports
 
-## Local quick run (optional)
+## Complete Deployment
+
+For full instructions on deploying to a new k0s server, see [DEPLOYMENT.md](../DEPLOYMENT.md).
+
+Quick summary:
+
+1. Build Docker images locally (M4 Mac, cross-compile to x86)
+2. Push to Docker Hub
+3. Deploy to k0s with kubectl
+4. Install Traefik ingress controller
+5. Access via `http://demo.klassify.com` or `https://demo.klassify.com`
+
+## Local Development
 
 Backend:
 
@@ -26,9 +39,15 @@ npm run dev
 
 Then open: http://localhost:5173
 
-## Build container images
+## Build container images (for deployment)
 
-### Backend
+**Prerequisites:**
+
+- Docker with buildx support
+- Docker Hub account (or other registry)
+- For x86 servers: build with `--platform linux/amd64`
+
+### Backend (Java 21)
 
 ```bash
 cd demo-app/backend

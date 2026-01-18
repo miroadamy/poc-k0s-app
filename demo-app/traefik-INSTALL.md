@@ -1,6 +1,6 @@
 # Traefik Ingress Controller Installation
 
-Traefik is installed via Helm from the official Traefik Helm repository for HTTP/HTTPS routing on k0s.
+Traefik is installed via Helm from the official Traefik Helm repository for HTTP/HTTPS routing on k0s, bound to standard host ports 80 and 443.
 
 ## Quick Start Installation
 
@@ -11,51 +11,44 @@ helm repo update
 # Create namespace
 kubectl create namespace traefik
 
-# Install Traefik with NodePort service
+# Install Traefik with hostPort binding for standard ports
 helm install traefik traefik/traefik -n traefik \
-  --set service.type=NodePort \
-  --set ports.web.nodePort=30080 \
-  --set ports.websecure.nodePort=30443 \
-  --set ports.websecure.tls.enabled=true
+  --set service.type=ClusterIP \
+  --set ports.web.hostPort=80 \
+  --set ports.websecure.hostPort=443
 ```
 
 ## Configuration Details
 
-- **Service Type**: NodePort (HTTP on 30080, HTTPS on 30443)
+- **Service Type**: ClusterIP with hostPort binding (standard ports 80 and 443)
 - **Network**: ClusterFirst DNS (standard Kubernetes networking)
 - **Storage**: In-memory (no persistent storage required)
+- **Host Ports**: 80 (HTTP) and 443 (HTTPS) directly on the host
 
 ## Port Mappings
 
-- Port 30080 (NodePort) → Port 80 (Traefik HTTP service)
-- Port 30443 (NodePort) → Port 443 (Traefik HTTPS service)
+- Port 80 (Host) → Port 80 (Traefik HTTP service)
+- Port 443 (Host) → Port 443 (Traefik HTTPS service)
 
 ## Working Access Methods
 
-### ✅ HTTP (Fully Working & Recommended)
+### ✅ HTTP (Port 80 - Working)
 
-Access: `http://demo.klassify.com:30080/`
+Access: `http://demo.klassify.com/`
 
 - Perfect for load-balancing demonstrations
 - No certificate issues
 - Fully functional frontend and backend API
 - Verified working from any browser or client
 
-### ⚠️ HTTPS (Partial - TLS Works, Browser Doesn't)
+### ✅ HTTPS (Port 443 - Working)
 
-The TLS handshake works (verified via curl with `-vk` flag), but browser access hangs after initial connection. This is a frontend asset loading issue, not a certificate/TLS problem.
+Access: `https://demo.klassify.com/`
 
-**Status:**
-
-- TLS 1.3 encryption: ✅ Working
-- Certificate validation: ✅ Self-signed cert served correctly
-- HTTP/2: ✅ Supported
-- curl with `-vk`: ✅ Full API response received
-- Browser access: ❌ Hangs during asset loading
-
-**Recommendation**: Use HTTP (port 30080) for your load-balancing demo. It's production-ready and fully functional.
-
-## IngressRoute Configuration
+- TLS 1.3 encryption active
+- Self-signed certificate (browser will show warning - accept it)
+- Frontend and backend fully functional
+- Verified working on standard HTTPS port 443
 
 Routes are defined in:
 
@@ -76,9 +69,14 @@ This generates a self-signed certificate and configures Traefik for HTTPS. Note:
 Test load balancing with repeated requests:
 
 ```bash
-# HTTP version (recommended)
+# HTTP version
 for i in {1..10}; do
-  curl -s -H 'Host: demo.klassify.com' http://127.0.0.1:30080/api/hello | grep hostname
+  curl -s -H 'Host: demo.klassify.com' http://127.0.0.1/api/hello | grep hostname
+done
+
+# HTTPS version
+for i in {1..10}; do
+  curl -sk -H 'Host: demo.klassify.com' https://127.0.0.1/api/hello | grep hostname
 done
 
 # Expected: See different pod names (demo-backend-67497b595-7vbzw vs demo-backend-67497b595-mnwrc)
