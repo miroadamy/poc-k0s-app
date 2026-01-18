@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: demo-frontend
+  namespace: demo-app
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`demo.klassify.com`)
+      services:
+        - name: demo-frontend
+          port: 80
+  tls:
+    certResolver: le
