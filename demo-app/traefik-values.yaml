@@ -1,0 +1,55 @@
+# Traefik Helm Values - DNS-01 Challenge with Route53
+# Install with: helm install traefik traefik/traefik -n traefik --create-namespace -f traefik-values.yaml
+
+service:
+  type: NodePort
+  ports:
+    web:
+      nodePort: 30080
+    websecure:
+      nodePort: 30443
+
+ports:
+  web:
+    nodePort: 30080
+  websecure:
+    nodePort: 30443
+    tls:
+      enabled: true
+  metrics:
+    port: 8080
+
+# Network configuration
+hostNetwork: false
+dnsPolicy: ClusterFirst
+
+# ACME / Let's Encrypt Configuration with DNS-01 Challenge
+certificatesResolvers:
+  le:
+    acme:
+      email: admin@klassify.com
+      storage: /data/acme.json
+      dnsChallenge:
+        provider: route53
+        delayBeforeCheck: 10
+        disablePropagationCheck: false
+
+# Persistence for ACME certificates (required for DNS-01)
+persistence:
+  enabled: true
+  name: data
+  path: /data
+  size: 128Mi
+  accessMode: ReadWriteOnce
+# AWS Route53 credentials as environment variables
+# IMPORTANT: Set these via Kubernetes secrets or helm --set flags
+# DO NOT commit actual credentials to this file!
+#
+# Set via command line:
+# helm install traefik traefik/traefik -n traefik -f traefik-values.yaml \
+#   --set 'env[0].name=AWS_REGION' \
+#   --set 'env[0].value=eu-west-1' \
+#   --set 'env[1].name=AWS_ACCESS_KEY_ID' \
+#   --set 'env[1].value=YOUR_ACCESS_KEY' \
+#   --set 'env[2].name=AWS_SECRET_ACCESS_KEY' \
+#   --set 'env[2].value=YOUR_SECRET_KEY'

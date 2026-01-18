@@ -7,4 +7,3 @@ resources:
   - frontend-deployment.yaml
   - frontend-service.yaml
   - route.yaml
-  - route-http.yaml
